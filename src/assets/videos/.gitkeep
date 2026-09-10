@@ -1,0 +1,13 @@
+# Place your video files here
+# Required videos for the experience:
+# - scene1.mp4: Opening scene background (plan large, ambiance douce)
+# - scene2.mp4: Memory scene (specific memory or gentle excerpt)
+# - scene4.mp4: Soul scene medallion (portrait video)
+# 
+# Format recommendations:
+# - Codec: H.264
+# - Container: MP4
+# - Resolution: 1080x1920 (vertical) for mobile-first
+# - Bitrate: 2-3 Mbps for balance of quality and mobile performance
+# - Duration: 10-30 seconds per video (looped)
+# - Audio: No audio needed (videos are muted for autoplay)

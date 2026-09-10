@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Océane</title>
+  <script type="module" crossorigin src="./assets/index-DxlbKAfA.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Ce47__8R.css">
+</head>
+<body>
+    <!-- Audio Control -->
+    <button id="audio-toggle" class="audio-toggle" aria-label="Toggle audio">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+            <path id="sound-waves" d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+    </button>
+
+    <!-- Scene 0: Landing -->
+    <section id="scene-0" class="scene scene-landing">
+        <div class="landing-content">
+            <h1 class="landing-name" data-text="Océane">Océane</h1>
+            <p class="landing-subtitle">Une histoire, la tienne, la nôtre.</p>
+            <button id="start-btn" class="start-button">Appuie pour commencer</button>
+        </div>
+        <div class="particles" id="particles-landing"></div>
+    </section>
+
+    <!-- Scene 1: Opening -->
+    <section id="scene-1" class="scene scene-opening">
+        <div class="video-background">
+            <!-- VIDEO: extrait 1 en fond, plan large, ambiance douce -->
+            <video id="video-1" class="bg-video" muted playsinline loop autoplay poster="">
+                <source src="./assets/scene1-ouverture-rY0CFWFd.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="scene-content">
+            <p class="narrative-text">
+                <span class="text-line">Il y a des gens qui traversent une vie.</span>
+                <span class="text-line">Et il y a des gens qui la traversent en la rendant plus belle.</span>
+                <span class="text-line">Toi, tu fais partie de la deuxième catégorie.</span>
+                <span class="text-line">Alors avant toute chose : merci d'être qui tu es.</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Scene 2: Memory -->
+    <section id="scene-2" class="scene scene-memory">
+        <div class="memory-container">
+            <div class="memory-visual">
+                <!-- VIDEO/PHOTO: souvenir spécifique si disponible, sinon extrait doux -->
+                <video id="video-2" class="memory-video" muted playsinline loop autoplay poster="">
+                    <source src="./assets/scene2-souvenir-CmqEm2WF.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="memory-text">
+                <p class="narrative-text">
+                    <span class="text-line">Je me souviens d'un soir, la veille de mon départ pour Ouaga.</span>
+                    <span class="text-line">Tu es venue. Tu m'as préparé à manger.</span>
+                    <span class="text-line">Ce n'était peut-être rien pour toi.</span>
+                    <span class="text-line">Pour moi, c'est resté l'une des attentions les plus sincères que j'ai reçues à cette période de ma vie.</span>
+                    <span class="text-line">Ce genre de geste simple qui, avec le recul, en dit plus long que n'importe quel mot.</span>
+                    <span class="text-line">Je n'ai jamais oublié.</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scene 3: Personality -->
+    <section id="scene-3" class="scene scene-personality">
+        <div class="scene-content">
+            <p class="narrative-text personality-text">
+                <span class="text-line">Tu es de ces personnes rares qui écoutent vraiment.</span>
+                <span class="text-line">Qui restent, même quand ce serait plus simple de partir.</span>
+                <span class="text-line">Qui donnent sans compter, et qui pardonnent sans faire payer.</span>
+                <span class="text-line">Tu as une force tranquille — celle des gens qui ont traversé des choses et qui choisissent quand même la douceur.</span>
+                <span class="text-line">Dans une génération qui court après l'image, toi tu es restée vraie. Et ça, c'est rare.</span>
+            </p>
+        </div>
+        <div class="particles" id="particles-personality"></div>
+    </section>
+
+    <!-- Scene 4: Soul -->
+    <section id="scene-4" class="scene scene-soul">
+        <div class="scene-content">
+            <div class="medallion-container">
+                <!-- VIDEO: médaillon, plus pudique -->
+                <video id="video-4" class="medallion-video" muted playsinline loop autoplay poster="">
+                    <source src="./assets/scene4-portrait-BjCTRcNx.mp4" type="video/mp4">
+                </video>
+            </div>
+            <p class="narrative-text">
+                <span class="text-line">Tu n'as pas besoin de te comparer à qui que ce soit.</span>
+                <span class="text-line">Ce que tu es — ton âme, ta manière d'être, ta beauté, ton originalité — n'a pas de double.</span>
+                <span class="text-line">Alors s'il te plaît, ne doute jamais de ça.</span>
+                <span class="text-line">Tu n'as rien à corriger. Tu es déjà, exactement comme tu es, quelqu'un d'entier.</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Scene 5: Regrets -->
+    <section id="scene-5" class="scene scene-regrets">
+        <div class="scene-content minimal-content">
+            <p class="narrative-text">
+                <span class="text-line">Il y a une période où je suis parti sans prévenir.</span>
+                <span class="text-line">Je traversais quelque chose de lourd, une période sombre, et je n'ai pas eu le courage de t'en parler.</span>
+                <span class="text-line">Je t'ai laissée sans un mot. Ce n'était pas toi. Ce n'était jamais toi.</span>
+                <span class="text-line">C'était moi, qui n'arrivais pas à trouver les mots à ce moment-là.</span>
+                <span class="text-line">Je suis sincèrement désolé pour ce silence.</span>
+                <span class="text-line">Et je suis reconnaissant, plus que tu ne l'imagines, que tu m'aies laissé une place pour revenir.</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Scene 6: Undertone -->
+    <section id="scene-6" class="scene scene-undertone">
+        <div class="scene-content">
+            <p class="narrative-text">
+                <span class="text-line">Si je te dis que cette histoire compte plus que les autres, tu comprendras peut-être pourquoi.</span>
+                <span class="text-line">Je ne vais pas tout dire ici. Certaines choses se disent mieux dans un regard, une conversation, un silence partagé.</span>
+                <span class="text-line">Mais si en lisant ça, une question te traverse l'esprit... laisse-la simplement s'installer.</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Scene 7: Game -->
+    <section id="scene-7" class="scene scene-game">
+        <div class="game-content">
+            <p class="game-question">Alors, tu acceptes de rester un peu plus longtemps dans cette histoire ?</p>
+            <div class="game-buttons">
+                <button id="yes-btn" class="game-button yes-button">Oui</button>
+                <button id="no-btn" class="game-button no-button">Non</button>
+            </div>
+            <p id="game-message" class="game-message"></p>
+        </div>
+    </section>
+
+    <!-- Scene 8: Final -->
+    <section id="scene-8" class="scene scene-final">
+        <div class="final-content">
+            <p class="final-text">
+                <span class="text-line">Merci d'être arrivée jusqu'ici.</span>
+                <span class="text-line">Merci d'être toi, tout simplement.</span>
+            </p>
+            <p class="final-signature">— BONSA Abdoul Rachid</p>
+            <p class="final-love">Je t'aime, Océane.</p>
+            <a href="sms:?body=J'ai lu ton histoire..." class="final-action">Laisse-moi un mot</a>
+        </div>
+        <div class="particles" id="particles-final"></div>
+    </section>
+
+</body>
+</html>
