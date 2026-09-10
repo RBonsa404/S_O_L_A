@@ -52,8 +52,18 @@ function preloadVideos() {
 }
 
 // ===== AUDIO SYSTEM =====
+let audioContext = null;
+
 function initAudio() {
     if (isAudioInitialized) return;
+    
+    // Initialize AudioContext for mobile
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        console.log('AudioContext initialized');
+    } catch (e) {
+        console.log('AudioContext not supported:', e);
+    }
     
     audio = new Howl({
         src: ['/src/assets/audio/musique-fond.mp3'],
@@ -69,39 +79,74 @@ function initAudio() {
         },
         onplayerror: (id, error) => {
             console.log('Audio play error:', error);
-            // Try to unlock audio on mobile
-            if (audio.state() === 'unloaded') {
-                audio.load();
-            }
         }
     });
     
     isAudioInitialized = true;
 }
 
+function unlockAudio() {
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {
+            console.log('AudioContext resumed');
+        }).catch(e => console.log('AudioContext resume error:', e));
+    }
+}
+
 function playAudio() {
     if (!audio) return;
     
-    // Unlock audio context for mobile
+    // Unlock audio context first
+    unlockAudio();
+    
+    // Force load if needed
     if (audio.state() === 'unloaded') {
         audio.load();
     }
     
+    // Try to play
     audio.play().then(() => {
         console.log('Audio playing successfully');
         isMuted = false;
         updateAudioToggle();
     }).catch(error => {
         console.log('Audio play error:', error);
-        // Fallback: try to play on next user interaction
-        document.addEventListener('click', () => {
-            audio.play().catch(e => console.log('Fallback play error:', e));
-        }, { once: true });
+        
+        // Aggressive fallback: try multiple times
+        let attempts = 0;
+        const maxAttempts = 5;
+        
+        const tryPlay = () => {
+            if (attempts >= maxAttempts) {
+                console.log('Max audio play attempts reached');
+                return;
+            }
+            
+            attempts++;
+            console.log(`Audio play attempt ${attempts}`);
+            
+            unlockAudio();
+            
+            audio.play().then(() => {
+                console.log('Audio playing on attempt', attempts);
+                isMuted = false;
+                updateAudioToggle();
+            }).catch(e => {
+                console.log(`Attempt ${attempts} failed:`, e);
+                if (attempts < maxAttempts) {
+                    setTimeout(tryPlay, 200 * attempts);
+                }
+            });
+        };
+        
+        setTimeout(tryPlay, 100);
     });
 }
 
 function toggleAudio() {
     if (!audio) return;
+    
+    unlockAudio();
     
     if (isMuted) {
         audio.play().then(() => {
@@ -400,25 +445,39 @@ function handleYesButton() {
 
 // ===== START BUTTON =====
 function handleStart() {
-    // Initialize and play audio with mobile fallback
+    // Initialize audio
     initAudio();
     
-    // Force audio unlock for mobile
+    // Multiple aggressive audio unlock attempts
+    unlockAudio();
+    
+    // Force load and play with multiple attempts
     if (audio) {
         audio.load();
-        setTimeout(() => {
-            audio.play().then(() => {
-                console.log('Audio started successfully');
-                isMuted = false;
-                updateAudioToggle();
-            }).catch(error => {
-                console.log('Initial audio play failed:', error);
-                // Try again after short delay
+        
+        // Try immediately
+        audio.play().then(() => {
+            console.log('Audio started immediately');
+            isMuted = false;
+            updateAudioToggle();
+        }).catch(error => {
+            console.log('Immediate play failed:', error);
+            
+            // Try with delays
+            const delays = [100, 300, 500, 1000];
+            delays.forEach((delay, index) => {
                 setTimeout(() => {
-                    audio.play().catch(e => console.log('Retry audio play failed:', e));
-                }, 100);
+                    unlockAudio();
+                    audio.play().then(() => {
+                        console.log(`Audio started on delay ${delay}ms`);
+                        isMuted = false;
+                        updateAudioToggle();
+                    }).catch(e => {
+                        console.log(`Play failed at ${delay}ms:`, e);
+                    });
+                }, delay);
             });
-        }, 100);
+        });
     }
 
     // Play all videos after user interaction
