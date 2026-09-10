@@ -60,11 +60,19 @@ function initAudio() {
         loop: true,
         volume: 0.5,
         html5: true,
+        preload: true,
         onload: () => {
             console.log('Audio loaded');
         },
         onloaderror: (id, error) => {
             console.log('Audio load error:', error);
+        },
+        onplayerror: (id, error) => {
+            console.log('Audio play error:', error);
+            // Try to unlock audio on mobile
+            if (audio.state() === 'unloaded') {
+                audio.load();
+            }
         }
     });
     
@@ -73,23 +81,40 @@ function initAudio() {
 
 function playAudio() {
     if (!audio) return;
-    audio.play();
-    isMuted = false;
-    updateAudioToggle();
+    
+    // Unlock audio context for mobile
+    if (audio.state() === 'unloaded') {
+        audio.load();
+    }
+    
+    audio.play().then(() => {
+        console.log('Audio playing successfully');
+        isMuted = false;
+        updateAudioToggle();
+    }).catch(error => {
+        console.log('Audio play error:', error);
+        // Fallback: try to play on next user interaction
+        document.addEventListener('click', () => {
+            audio.play().catch(e => console.log('Fallback play error:', e));
+        }, { once: true });
+    });
 }
 
 function toggleAudio() {
     if (!audio) return;
     
     if (isMuted) {
-        audio.play();
-        isMuted = false;
+        audio.play().then(() => {
+            isMuted = false;
+            updateAudioToggle();
+        }).catch(error => {
+            console.log('Audio toggle play error:', error);
+        });
     } else {
         audio.pause();
         isMuted = true;
+        updateAudioToggle();
     }
-    
-    updateAudioToggle();
 }
 
 function updateAudioToggle() {
@@ -375,9 +400,26 @@ function handleYesButton() {
 
 // ===== START BUTTON =====
 function handleStart() {
-    // Initialize and play audio
+    // Initialize and play audio with mobile fallback
     initAudio();
-    playAudio();
+    
+    // Force audio unlock for mobile
+    if (audio) {
+        audio.load();
+        setTimeout(() => {
+            audio.play().then(() => {
+                console.log('Audio started successfully');
+                isMuted = false;
+                updateAudioToggle();
+            }).catch(error => {
+                console.log('Initial audio play failed:', error);
+                // Try again after short delay
+                setTimeout(() => {
+                    audio.play().catch(e => console.log('Retry audio play failed:', e));
+                }, 100);
+            });
+        }, 100);
+    }
 
     // Play all videos after user interaction
     playAllVideos();
