@@ -56,11 +56,15 @@ let audioElement = null;
 function initAudio() {
     if (isAudioInitialized) return;
     
-    // Use native HTML5 audio instead of Howler for better mobile compatibility
-    audioElement = new Audio('/src/assets/audio/musique-fond.mp3');
-    audioElement.loop = true;
+    // Get the HTML audio element
+    audioElement = document.getElementById('background-audio');
+    
+    if (!audioElement) {
+        console.log('Audio element not found');
+        return;
+    }
+    
     audioElement.volume = 0.5;
-    audioElement.preload = 'auto';
     
     audioElement.addEventListener('canplaythrough', () => {
         console.log('Audio ready to play');
@@ -80,35 +84,40 @@ function initAudio() {
         console.log('Audio paused');
     });
     
+    audioElement.addEventListener('playing', () => {
+        console.log('Audio is playing');
+    });
+    
     isAudioInitialized = true;
 }
 
 function playAudio() {
     if (!audioElement) return;
     
-    // Try to play native audio
+    console.log('Attempting to play audio...');
+    
+    // Force load for Safari
+    audioElement.load();
+    
+    // Try to play
     const playPromise = audioElement.play();
     
     if (playPromise !== undefined) {
         playPromise.then(() => {
-            console.log('Native audio playing successfully');
+            console.log('Audio playing successfully');
             isMuted = false;
             updateAudioToggle();
         }).catch(error => {
-            console.log('Native audio play error:', error);
+            console.log('Audio play error:', error);
             
-            // Fallback: try on user interaction
-            const enableAudio = () => {
+            // Safari mobile specific fallback
+            setTimeout(() => {
                 audioElement.play().then(() => {
-                    console.log('Audio enabled on interaction');
+                    console.log('Audio playing on retry');
                     isMuted = false;
                     updateAudioToggle();
-                }).catch(e => console.log('Fallback play error:', e));
-            };
-            
-            // Try on click anywhere
-            document.addEventListener('click', enableAudio, { once: true });
-            document.addEventListener('touchstart', enableAudio, { once: true });
+                }).catch(e => console.log('Retry failed:', e));
+            }, 100);
         });
     }
 }
@@ -117,7 +126,6 @@ function toggleAudio() {
     if (!audioElement) return;
     
     if (isMuted) {
-        // Unmute and play
         audioElement.muted = false;
         audioElement.play().then(() => {
             isMuted = false;
@@ -126,7 +134,6 @@ function toggleAudio() {
             console.log('Audio toggle play error:', error);
         });
     } else {
-        // Mute and pause
         audioElement.pause();
         audioElement.muted = true;
         isMuted = true;
@@ -420,9 +427,13 @@ function handleYesButton() {
 
 // ===== START BUTTON =====
 function handleStart() {
-    // Initialize and play audio
+    // Initialize audio
     initAudio();
-    playAudio();
+    
+    // Multiple attempts for Safari
+    setTimeout(() => playAudio(), 0);
+    setTimeout(() => playAudio(), 100);
+    setTimeout(() => playAudio(), 300);
 
     // Play all videos after user interaction
     playAllVideos();
